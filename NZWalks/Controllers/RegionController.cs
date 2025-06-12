@@ -32,9 +32,9 @@ namespace NZWalks.Controllers
 
         [HttpGet]
         [Route("{id:Guid}")]
-        public async Task<IActionResult?> GetById([FromRoute] Guid id)
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
-            var getRegion = regionRepository.GetByIdAsync(id);
+            var getRegion = await regionRepository.GetByIdAsync(id);
             if (getRegion == null)
             {
                 return NotFound();
@@ -54,9 +54,9 @@ namespace NZWalks.Controllers
 
         [HttpPut]
         [Route("{id:Guid}")]
-        public async Task<IActionResult?> UpdateRegion([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto requestDto)
+        public async Task<IActionResult> UpdateRegion([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto requestDto)
         {
-            var region = mapper.Map<Region>(regionRepository);
+            var region = mapper.Map<Region>(requestDto);
             region = await regionRepository.UpdateAsync(id, region);
             if (region == null)
             {
@@ -68,9 +68,9 @@ namespace NZWalks.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
-        public async Task<IActionResult?> DeleteRegion([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteRegion([FromRoute] Guid id)
         {
-            var getregion = regionRepository.DeleteAsync(id);
+            var getregion = await regionRepository.DeleteAsync(id);
             if (getregion == null)
             {
                 return NotFound();
