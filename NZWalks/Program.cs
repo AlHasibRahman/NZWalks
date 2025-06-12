@@ -1,21 +1,40 @@
 using Microsoft.EntityFrameworkCore;
 using NZWalks.Data;
+using NZWalks.Mappings;
+using NZWalks.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// ----------------------------
+// Register services
+// ----------------------------
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-builder.Services.AddDbContext<NZWalksDbContext>(options => options.UseSqlServer(
-    builder.Configuration.GetConnectionString("NZWalkConnectionString")));
+
+// ✅ Swagger/OpenAPI configuration (standard)
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// ✅ Register EF Core with SQL Server
+builder.Services.AddDbContext<NZWalksDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("NZWalkConnectionString")));
+
+// ✅ Register repository
+builder.Services.AddScoped<IRegionRepository, SQLRegionRepositories>();
+
+// ✅ Register AutoMapper
+builder.Services.AddAutoMapper(typeof(AutoMapperFrofiles));
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ----------------------------
+// Configure middleware pipeline
+// ----------------------------
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
